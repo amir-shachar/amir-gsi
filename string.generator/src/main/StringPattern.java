@@ -24,11 +24,26 @@ public class StringPattern
             {
                 addNumeric();
             }
+            else if(pattern.substring(0,2).equals("?l"))
+            {
+                addAlpha();
+            }
             else
             {
                 addLiteral();
             }
         }
+    }
+
+    private void addAlpha()
+    {
+        StringBuilder alpha = new StringBuilder();
+        while(!pattern.isEmpty() && pattern.substring(0,2).equals("?l"))
+        {
+            alpha.append("#");
+            pattern = pattern.substring(2);
+        }
+        representation.add(alpha.toString());
     }
 
     private void addLiteral()
