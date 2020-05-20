@@ -1,6 +1,5 @@
 package main;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class StringPattern
         StringBuilder alpha = new StringBuilder();
         while(!pattern.isEmpty() && pattern.substring(0,2).equals("?l"))
         {
-            alpha.append("#");
+            alpha.append("&");
             pattern = pattern.substring(2);
         }
         representation.add(alpha.toString());
