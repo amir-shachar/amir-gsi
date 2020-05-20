@@ -69,14 +69,30 @@ public class StringPattern
     private void addLiteral()
     {
         StringBuilder literal = new StringBuilder();
-        while(pattern.length()>=2 && !pattern.substring(0,2).equals("?d")
-                && !pattern.substring(0,2).equals("?l")
-                && !pattern.substring(0,2).equals("?a"))
+        String nextPart = "";
+
+        while(!pattern.isEmpty())
         {
-            literal.append(pattern.charAt(0));
-            pattern = pattern.substring(1);
+            if(pattern.length() > 2)
+                nextPart = pattern.substring(0,2);
+            if(isNextPartNotPatternLetter(nextPart))
+            {
+                literal.append(pattern.charAt(0));
+                pattern = pattern.substring(1);
+            }
+            else
+            {
+                break;
+            }
         }
         representation.add(literal.toString());
+    }
+
+    private boolean isNextPartNotPatternLetter(String nextPart)
+    {
+        return !nextPart.equals("?d")
+                && !nextPart.equals("?l")
+                && !nextPart.equals("?a");
     }
 
     private void addNumeric()
