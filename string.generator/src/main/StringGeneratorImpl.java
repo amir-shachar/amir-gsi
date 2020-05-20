@@ -18,16 +18,20 @@ public class StringGeneratorImpl implements StringGenerator
         List<String> list = stringPattern.getRepresentation();
         Set<String> generatedStrings = new HashSet<>();
         int curValue = rangeFrom;
-        while((maxNumericValueNotAchieved(list, curValue) ||
-                maxAlphaBeticalValueNotAchieved(list,curValue) ||
-                maxAlphaNumericValueNotAchieved(list, curValue))
-                && generatedStrings.size() < size)
+        while(maxValuesHadNotBeenReached(list, curValue) && generatedStrings.size() < size)
         {
             generatedStrings.add(insertValueIntoString(list, curValue));
             curValue++;
         }
 
         return generatedStrings;
+    }
+
+    private boolean maxValuesHadNotBeenReached(List<String> list, int curValue)
+    {
+        return maxNumericValueNotAchieved(list, curValue) ||
+                maxAlphaBeticalValueNotAchieved(list,curValue) ||
+                maxAlphaNumericValueNotAchieved(list, curValue);
     }
 
     private boolean maxAlphaNumericValueNotAchieved(List<String> list, int value)
