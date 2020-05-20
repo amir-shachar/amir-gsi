@@ -49,7 +49,8 @@ public class StringPattern
     private void addLiteral()
     {
         StringBuilder literal = new StringBuilder();
-        while(!pattern.substring(0,2).equals("?d"))
+        while(!pattern.isEmpty() && !pattern.substring(0,2).equals("?d")
+                && !pattern.substring(0,2).equals("?l"))
         {
             literal.append(pattern.charAt(0));
             pattern = pattern.substring(1);
