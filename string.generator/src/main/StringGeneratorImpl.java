@@ -165,7 +165,7 @@ public class StringGeneratorImpl implements StringGenerator
 
         private boolean isAValidPatternLetter(int i)
         {
-            return i+2 < pattern.length() && patternLetters.contains(pattern.substring(i,i+2));
+            return i+2 <= pattern.length() && patternLetters.contains(pattern.substring(i,i+2));
         }
 
         private boolean isAValidSingleLetter(int i)
