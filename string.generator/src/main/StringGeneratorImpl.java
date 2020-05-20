@@ -9,6 +9,7 @@ public class StringGeneratorImpl implements StringGenerator
     @Override
     public Set<String> generate(String pattern, int rangeFrom, int size)
     {
+        assertvalidPattern(pattern);
         StringPattern stringPattern = new StringPattern(pattern);
         List<String> list = stringPattern.getRepresentation();
         Set<String> generatedStrings = new HashSet<>();
@@ -21,6 +22,33 @@ public class StringGeneratorImpl implements StringGenerator
         }
 
         return generatedStrings;
+    }
+
+    private void assertvalidPattern(String pattern) throws InvalidCharacterException
+    {
+        int i =0 ;
+        Set<String> patternletters = new HashSet<>();
+        patternletters.add("?d");
+        patternletters.add("?l");
+        patternletters.add("?a");
+        String staticLetters = "!@#$";
+        while (i < pattern.length())
+        {
+            if(Character.isUpperCase(pattern.charAt(i)) ||
+                    Character.isLowerCase(pattern.charAt(i)) ||
+                    staticLetters.contains(pattern.substring(i,i+1)))
+            {
+                i++;
+            }
+            else if(i+2 < pattern.length() && patternletters.contains(pattern.substring(i,i+2)))
+            {
+                i+=2;
+            }
+            else
+            {
+                throw new InvalidCharacterException();
+            }
+        }
     }
 
     private boolean maxNumericValueNotAchieved(List<String> list, int value)
