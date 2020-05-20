@@ -22,15 +22,18 @@ public class StringPattern
     {
         while(!pattern.isEmpty())
         {
-            if(pattern.substring(0,2).equals("?d"))
+            String nextPart = "";
+            if(pattern.length()>=2)
+                nextPart = pattern.substring(0,2);
+            if(nextPart.equals("?d"))
             {
                 addNumeric();
             }
-            else if(pattern.substring(0,2).equals("?l"))
+            else if(nextPart.equals("?l"))
             {
                 addAlpha();
             }
-            else if(pattern.substring(0,2).equals("?a"))
+            else if(nextPart.equals("?a"))
             {
                 addAlphaNumeric();
             }
@@ -66,7 +69,7 @@ public class StringPattern
     private void addLiteral()
     {
         StringBuilder literal = new StringBuilder();
-        while(!pattern.isEmpty() && !pattern.substring(0,2).equals("?d")
+        while(pattern.length()>=2 && !pattern.substring(0,2).equals("?d")
                 && !pattern.substring(0,2).equals("?l")
                 && !pattern.substring(0,2).equals("?a"))
         {
