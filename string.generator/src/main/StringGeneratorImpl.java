@@ -70,7 +70,7 @@ public class StringGeneratorImpl implements StringGenerator
     {
         int index =0;
         String numericValue = buildNumericString(getLengthOfSegmentsWith(list, "*"),curValue);
-        String alphaValue = buildOrderedString(getLengthOfSegmentsWith(list, "#"),curValue);
+        String alphaValue = buildOrderedString(getLengthOfSegmentsWith(list, "&"),curValue);
         int numericValueIndex = 0;
         int alphaValueIndex = 0;
         StringBuilder builder = new StringBuilder();
@@ -80,7 +80,7 @@ public class StringGeneratorImpl implements StringGenerator
             {
                 numericValueIndex = addNumeric(list.get(index).length(), numericValue, numericValueIndex, builder);
             }
-            else if (list.get(index).contains("#"))
+            else if (list.get(index).contains("&"))
             {
                 alphaValueIndex = addAlpha(list.get(index).length(),alphaValue, alphaValueIndex, builder);
             }
