@@ -6,6 +6,9 @@ import java.util.List;
 public class StringPattern
 {
     private String pattern;
+    public static String DECIMAL_CHAR = "*";
+    public static String ALPHABET_CHAR = "&";
+    public static String ALPHANUMERIC_CHAR = "^";
 
     private List<String> representation = new ArrayList<>();
 
@@ -27,6 +30,10 @@ public class StringPattern
             {
                 addAlpha();
             }
+            else if(pattern.substring(0,2).equals("?a"))
+            {
+                addAlphaNumeric();
+            }
             else
             {
                 addLiteral();
@@ -34,12 +41,23 @@ public class StringPattern
         }
     }
 
+    private void addAlphaNumeric()
+    {
+        StringBuilder alpha = new StringBuilder();
+        while(!pattern.isEmpty() && pattern.substring(0,2).equals("?a"))
+        {
+            alpha.append(ALPHANUMERIC_CHAR);
+            pattern = pattern.substring(2);
+        }
+        representation.add(alpha.toString());
+    }
+
     private void addAlpha()
     {
         StringBuilder alpha = new StringBuilder();
         while(!pattern.isEmpty() && pattern.substring(0,2).equals("?l"))
         {
-            alpha.append("&");
+            alpha.append(ALPHABET_CHAR);
             pattern = pattern.substring(2);
         }
         representation.add(alpha.toString());
@@ -49,7 +67,8 @@ public class StringPattern
     {
         StringBuilder literal = new StringBuilder();
         while(!pattern.isEmpty() && !pattern.substring(0,2).equals("?d")
-                && !pattern.substring(0,2).equals("?l"))
+                && !pattern.substring(0,2).equals("?l")
+                && !pattern.substring(0,2).equals("?a"))
         {
             literal.append(pattern.charAt(0));
             pattern = pattern.substring(1);
@@ -62,7 +81,7 @@ public class StringPattern
         StringBuilder number = new StringBuilder();
         while(!pattern.isEmpty() && pattern.substring(0,2).equals("?d"))
         {
-            number.append("*");
+            number.append(DECIMAL_CHAR);
             pattern = pattern.substring(2);
         }
         representation.add(number.toString());

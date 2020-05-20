@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static main.StringPattern.ALPHABET_CHAR;
+import static main.StringPattern.ALPHANUMERIC_CHAR;
+import static main.StringPattern.DECIMAL_CHAR;
+
 public class StringGeneratorImpl implements StringGenerator
 {
     @Override
@@ -14,7 +18,9 @@ public class StringGeneratorImpl implements StringGenerator
         List<String> list = stringPattern.getRepresentation();
         Set<String> generatedStrings = new HashSet<>();
         int curValue = rangeFrom;
-        while((maxNumericValueNotAchieved(list, curValue) || maxAlphaBeticalValueNotAchieved(list,curValue))
+        while((maxNumericValueNotAchieved(list, curValue) ||
+                maxAlphaBeticalValueNotAchieved(list,curValue) ||
+                maxAlphaNumericValueNotAchieved(list, curValue))
                 && generatedStrings.size() < size)
         {
             generatedStrings.add(insertValueIntoString(list, curValue));
@@ -24,6 +30,11 @@ public class StringGeneratorImpl implements StringGenerator
         return generatedStrings;
     }
 
+    private boolean maxAlphaNumericValueNotAchieved(List<String> list, int value)
+    {
+        return Math.pow(36, getLengthOfSegmentsWith(list, ALPHANUMERIC_CHAR)) > value;
+    }
+
     private void assertValidPattern(String pattern) throws InvalidCharacterException
     {
         new PatternValidator(pattern).assertValid();
@@ -31,12 +42,12 @@ public class StringGeneratorImpl implements StringGenerator
 
     private boolean maxNumericValueNotAchieved(List<String> list, int value)
     {
-        return Math.pow(10, getLengthOfSegmentsWith(list, "*")) > value;
+        return Math.pow(10, getLengthOfSegmentsWith(list, DECIMAL_CHAR)) > value;
     }
 
     private boolean maxAlphaBeticalValueNotAchieved(List<String> list, int value)
     {
-        return Math.pow(10, getLengthOfSegmentsWith(list, "#")) > value;
+        return Math.pow(26, getLengthOfSegmentsWith(list, ALPHABET_CHAR)) > value;
     }
 
     private int getLengthOfSegmentsWith(List<String> list, String pattern)
@@ -47,20 +58,26 @@ public class StringGeneratorImpl implements StringGenerator
     private String insertValueIntoString(List<String> list, int curValue)
     {
         int index =0;
-        String numericValue = buildNumericString(getLengthOfSegmentsWith(list, "*"),curValue);
-        String alphaValue = buildOrderedString(getLengthOfSegmentsWith(list, "&"),curValue);
+        String numericValue = buildNumericString(getLengthOfSegmentsWith(list, DECIMAL_CHAR),curValue);
+        String alphaValue = buildOrderedString(getLengthOfSegmentsWith(list, ALPHABET_CHAR),curValue);
+        String alphaNumericValue = buildAlphaNumericString(getLengthOfSegmentsWith(list, ALPHANUMERIC_CHAR),curValue);
         int numericValueIndex = 0;
         int alphaValueIndex = 0;
+        int alphaNumericValueIndex = 0;
         StringBuilder builder = new StringBuilder();
         while(index < list.size())
         {
-            if(list.get(index).contains("*"))
+            if(list.get(index).contains(DECIMAL_CHAR))
             {
-                numericValueIndex = addNumeric(list.get(index).length(), numericValue, numericValueIndex, builder);
+                numericValueIndex = addFromString(list.get(index).length(), numericValue, numericValueIndex, builder);
             }
-            else if (list.get(index).contains("&"))
+            else if (list.get(index).contains(ALPHABET_CHAR))
             {
-                alphaValueIndex = addAlpha(list.get(index).length(),alphaValue, alphaValueIndex, builder);
+                alphaValueIndex = addFromString(list.get(index).length(),alphaValue, alphaValueIndex, builder);
+            }
+            else if(list.get(index).contains(ALPHANUMERIC_CHAR))
+            {
+                alphaNumericValueIndex = addFromString(list.get(index).length(),alphaNumericValue, alphaNumericValueIndex, builder);
             }
             else
             {
@@ -69,6 +86,27 @@ public class StringGeneratorImpl implements StringGenerator
             index++;
         }
         return builder.toString();
+    }
+
+    private String buildAlphaNumericString(int len, int curValue)
+    {
+        StringBuilder builder = new StringBuilder();
+        while(builder.length()< len)
+        {
+            int remainder = curValue%36;
+            if(remainder < 10)
+            {
+                builder.append((char)('0' + remainder));
+            }
+            else
+            {
+                remainder-=10;
+                builder.append((char)('a' + remainder));
+            }
+
+            curValue /= 36;
+        }
+        return builder.reverse().toString();
     }
 
     private String buildOrderedString(int len, int curValue)
@@ -93,25 +131,7 @@ public class StringGeneratorImpl implements StringGenerator
         return builder.reverse().toString();
     }
 
-    private int addNumeric(int len , String numericValue, int stringIndex, StringBuilder builder)
-    {
-        while( len > 0)
-        {
-            if(stringIndex < numericValue.length())
-            {
-                builder.append(numericValue.charAt(stringIndex));
-                stringIndex++;
-            }
-            else
-            {
-                builder.append("0");
-            }
-            len--;
-        }
-        return stringIndex;
-    }
-
-    private int addAlpha(int len, String alphaValue, int alphaIndex, StringBuilder builder)
+    private int addFromString(int len, String alphaValue, int alphaIndex, StringBuilder builder)
     {
         while( len > 0)
         {
@@ -121,6 +141,7 @@ public class StringGeneratorImpl implements StringGenerator
         }
         return alphaIndex;
     }
+
 
     private class PatternValidator
     {
